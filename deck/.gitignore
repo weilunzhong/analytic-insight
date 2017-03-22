@@ -1,0 +1,8 @@
+*.iml
+out
+out/*
+.idea
+.idea/*
+target
+target/*
+*.iml

@@ -1,0 +1,21 @@
+image: docker:git
+services:
+- docker:dind
+stages:
+- build
+- test
+- release
+variables:
+  CONTAINER_TEST_IMAGE: 'docker.vionlabs.com/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:$CI_BUILD_REF_NAME'
+  CONTAINER_RELEASE_IMAGE: 'docker.vionlabs.com/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:latest'
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN docker.vionlabs.com
+build:
+  stage: build
+  script:
+    - docker build -t $CONTAINER_TEST_IMAGE .
+    # todo: test
+    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+    - docker push $CONTAINER_RELEASE_IMAGE
+  only:
+    - master
